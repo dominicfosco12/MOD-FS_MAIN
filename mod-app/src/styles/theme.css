@@ -1,0 +1,13 @@
+/* src/styles/theme.css */
+:root { --galaxy-start:#0b1026; --galaxy-end:#1a0f2e; --neon:#67e8f9; }
+body { background:#0b0e1a; }
+.galaxy-bg {
+  background: radial-gradient(1000px 600px at 20% -10%, rgba(103,232,249,.15), transparent 60%),
+              radial-gradient(800px 500px at 90% 10%, rgba(168,85,247,.12), transparent 60%),
+              linear-gradient(160deg, var(--galaxy-start), var(--galaxy-end));
+  color:#eef2ff;
+}
+.card { border-radius:16px; }
+.btn-primary { background:var(--neon); border-color:var(--neon); color:#0b1026; }
+.btn-primary:hover { filter:brightness(.9); }
+.nav-link.active { font-weight:600; }
