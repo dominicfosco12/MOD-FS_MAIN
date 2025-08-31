@@ -1,0 +1,81 @@
+/* src/styles/Login.css */
+
+:root{
+  --bg0:#060812;
+  --bg1:#0c1022;
+  --nebulaA:#79a8ff;
+  --nebulaB:#b07bff;
+  --text:#eef3ff;
+  --muted:#a9b6d7;
+  --primary:#3dd5f3;
+  --primary-700:#20c3e6;
+}
+
+.galaxy-bg{
+  min-height:100vh;
+  background:
+    radial-gradient(1200px 900px at 65% 30%, rgba(121,168,255,.22), transparent 70%),
+    radial-gradient(900px 700px  at 30% 70%, rgba(176,123,255,.18), transparent 72%),
+    linear-gradient(180deg, var(--bg1), var(--bg0));
+  color:var(--text);
+  position:relative;
+  overflow:hidden;
+}
+
+/* subtle star dust */
+.galaxy-bg::before{
+  content:'';
+  position:fixed; inset:-40vh -40vw;
+  pointer-events:none; z-index:0;
+  opacity:.4;
+  background-repeat:repeat;
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff8 40%, transparent 41%),
+    radial-gradient(1px 1px at 140px 90px, #bcd2ff99 40%, transparent 41%),
+    radial-gradient(2px 2px at 240px 170px, #ffffff55 40%, transparent 41%);
+  background-size: 320px 320px, 520px 520px, 760px 760px;
+  animation: drift 220s linear infinite;
+}
+@keyframes drift{ to{ transform: translate3d(260px,-160px,0) } }
+
+/* card */
+.card{
+  border-radius:18px !important;
+  background: rgba(255,255,255,.10);
+  border: 1px solid rgba(255,255,255,.16) !important;
+  box-shadow: 0 16px 60px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+  backdrop-filter: blur(10px);
+  color: var(--text);
+}
+
+/* inputs */
+.form-control{
+  background: rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.2);
+  color: var(--text);
+}
+.form-control:focus{
+  border-color: #79a8ff;
+  box-shadow: 0 0 0 .2rem rgba(121,168,255,.25);
+}
+
+/* button */
+.btn-primary{
+  background: linear-gradient(180deg, var(--primary), var(--primary-700));
+  border-color: var(--primary-700);
+  color:#071022;
+  font-weight:700;
+  letter-spacing:.2px;
+  box-shadow: 0 10px 24px rgba(12,170,200,.35);
+}
+.btn-primary:hover{
+  filter: brightness(.98);
+  box-shadow: 0 12px 30px rgba(12,170,200,.45);
+}
+.btn-primary:disabled{
+  opacity:.7;
+  box-shadow:none;
+}
+
+/* misc */
+.text-muted{ color: var(--muted) !important }

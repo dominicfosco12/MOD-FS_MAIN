@@ -1,0 +1,118 @@
+:root{
+  --text:#e9f0ff;
+  --muted:#9fb0d3;
+  --glass:rgba(255,255,255,.06);
+  --glass-border:rgba(255,255,255,.14);
+}
+
+/* Shell */
+.hub-wrap{
+  background:#000;
+  color:var(--text);
+  min-height:100vh;
+  position:relative;
+  overflow:hidden;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+}
+
+/* React Three Fiber canvas pinned behind UI */
+.canvas-bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+}
+.canvas-bg canvas{
+  display:block;
+  width:100%;
+  height:100%;
+}
+.vignette{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background: radial-gradient(120% 100% at 50% 40%, transparent 60%, rgba(0,0,0,.85));
+  z-index:1;
+}
+
+/* Header: logo left, meta/actions right */
+.hub-header{
+  position:relative;
+  z-index:5;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:20px 24px;
+  min-height:110px;
+}
+.brand-left{ display:flex; align-items:center; gap:10px }
+.brand-logo{ height:44px; width:auto; object-fit:contain; filter:drop-shadow(0 0 16px rgba(90,160,255,.7)) }
+
+.header-right{ display:flex; flex-direction:column; align-items:flex-end; gap:8px }
+.meta{
+  display:flex; align-items:center; gap:10px;
+  padding:8px 12px; border-radius:14px;
+  background:var(--glass); border:1px solid var(--glass-border);
+  backdrop-filter: blur(8px); box-shadow:0 6px 24px rgba(0,0,0,.55);
+  color:#cfe0ff; font-size:.9rem;
+}
+.meta .firm{ color:#fff; font-weight:700; letter-spacing:.2px }
+.meta .sep, .actions .sep{ opacity:.5 }
+.actions{ display:flex; align-items:center; gap:10px; color:#cfe0ff; font-size:.9rem }
+.actions .email{ opacity:.95 }
+.actions .role{ opacity:.9; text-transform:capitalize }
+.btn{
+  border:1px solid rgba(122,162,255,.5);
+  background:linear-gradient(180deg, rgba(122,162,255,.14), rgba(122,162,255,.10));
+  color:#e8f7ff; padding:6px 14px; border-radius:14px; cursor:pointer;
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.btn:hover{ transform:translateY(-1px); box-shadow:0 0 14px rgba(122,162,255,.45) }
+.btn-logout{ font-weight:700; letter-spacing:.2px }
+
+/* Main + Cards */
+.hub-main{ position:relative; z-index:4; padding:20px 18px 48px }
+.tagline{ margin:8px 0 16px; text-align:center; color:var(--muted) }
+
+.primary-row{
+  display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap:clamp(16px, 3vw, 28px); max-width:1100px; margin:18px auto 8px;
+}
+.primary-feature .primary-card{
+  padding:32px 24px 28px; border-radius:18px; position:relative; overflow:hidden; text-align:center;
+  background:linear-gradient(180deg, var(--glass), transparent 130%);
+  border:1px solid var(--glass-border);
+  box-shadow:0 14px 46px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.06);
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+.primary-card .glow{
+  position:absolute; inset:-20%; filter:blur(40px); opacity:.45;
+  background: radial-gradient(600px 420px at 60% 40%, var(--c1), transparent 70%),
+              radial-gradient(520px 380px at 40% 70%, var(--c2), transparent 70%);
+  mix-blend-mode:screen; pointer-events:none;
+}
+.primary-card .icon{ font-size:2rem; margin-bottom:12px; color:var(--c1); text-shadow:0 0 18px var(--c1) }
+.primary-card .arrow{ position:absolute; right:16px; bottom:12px; color:#e7edffbf; transition:transform .2s ease }
+.primary-card:hover{ transform: translateY(-6px); box-shadow: 0 18px 60px rgba(0,0,0,.7) }
+.primary-card:hover .arrow{ transform: translate(4px,-4px) }
+
+.pc-title{ margin:0 0 6px; font-size:1.25rem; font-weight:800; letter-spacing:.2px }
+.pc-hint{ margin:0; color:var(--muted) }
+
+.primary-card.blue  { --c1: rgba(121,168,255,.55); --c2: rgba(58,120,255,.35) }
+.primary-card.violet{ --c1: rgba(183,125,255,.55); --c2: rgba(132,94,247,.35) }
+.primary-card.teal  { --c1: rgba(55,220,200,.55);  --c2: rgba(16,190,170,.35) }
+
+.secondary-nav{ display:flex; justify-content:center; flex-wrap:wrap; gap:14px; margin-top:22px }
+.sec-pill{
+  padding:12px 18px; border-radius:14px; background:linear-gradient(180deg, var(--glass), transparent 140%);
+  border:1px solid var(--glass-border); min-width:170px; text-align:center; box-shadow:0 8px 26px rgba(0,0,0,.5);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.sec-pill:hover{ transform:translateY(-3px); box-shadow:0 0 16px rgba(103,232,249,.45) }
+.sp-title{ font-weight:700 }
+.sp-hint{ font-size:.85rem; color:#8fa2c4 }
+
+/* motion safety */
+@media (prefers-reduced-motion: reduce){
+  .btn{ transition:none }
+}
