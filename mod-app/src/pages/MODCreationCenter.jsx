@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
-import '../styles/MODCreationCenter.css'
-import BuilderTile from '../components/BuilderTile'
+import '@/styles/MODCreationCenter.css'
+import BuilderTile from '@/components/BuilderTile'
 
 // Import modal shells (create these next)
-import NewPortfolioModal from '../components/modals/NewPortfolioModal'
-import NewAccountModal from '../components/modals/NewAccountModal'
+import NewPortfolioModal from '@/components/modals/NewPortfolioModal'
+import NewAccountModal from '@/components/modals/NewAccountModal'
 
 const TILE_CONFIGS = [
   {

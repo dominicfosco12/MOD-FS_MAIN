@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
-import { supabase } from '../services/supabaseClient'
-import '../styles/FirmChat.css'
+import { supabase } from '@/services/supabaseClient'
+import '@/styles/FirmChat.css'
 
 export default function FirmChat({ firmId }) {
   const [messages, setMessages] = useState([])

@@ -1,14 +1,14 @@
 import { useEffect, useState, useRef } from 'react'
-import { supabase } from '../services/supabaseClient'
+import { supabase } from '@/services/supabaseClient'
 import { useNavigate } from 'react-router-dom'
 import {
   FaChartPie, FaExchangeAlt, FaBolt,
   FaChartLine, FaCogs, FaBrain, FaDatabase, FaSlidersH
 } from 'react-icons/fa'
-import '../styles/HomeGalaxy.css'
-import MODlogo from '../assets/MODlogo.png'
-import avatar from '../assets/avatar.png'
-import FirmChat from '../components/FirmChat'
+import '@/styles/HomeGalaxy.css'
+import MODlogo from '@/assets/MODlogo.png'
+import avatar from '@/assets/avatar.png'
+import FirmChat from '@/components/FirmChat'
 
 const PRIMARY = [
   { key: 'pms', title: 'MOD-PMS', hint: 'Portfolio Management System', icon: <FaChartPie />, variant: 'blue' },

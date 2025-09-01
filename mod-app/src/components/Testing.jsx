@@ -1,5 +1,5 @@
 import React from 'react'
-import '../styles/Testing.css'
+import '@/styles/Testing.css'
 import { FaBolt, FaCloud, FaChargingStation } from 'react-icons/fa'
 
 const lightningModules = [

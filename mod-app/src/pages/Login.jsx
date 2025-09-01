@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthProvider'
-import { supabase } from '../services/supabaseClient'
-import '../styles/Login.css'
-import logo from '../assets/logo.png'
+import { useAuth } from '@/context/AuthProvider'
+import { supabase } from '@/services/supabaseClient'
+import '@/styles/Login.css'
+import logo from '@/assets/logo.png'
 
 export default function Login() {
   const { user } = useAuth()

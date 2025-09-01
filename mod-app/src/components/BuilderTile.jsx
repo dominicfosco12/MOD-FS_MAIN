@@ -1,5 +1,5 @@
 import React from 'react'
-import "../styles/BuilderTile.css"
+import "@/styles/BuilderTile.css"
 
 export default function BuilderTile({ title, description, icon, onClick }) {
   return (

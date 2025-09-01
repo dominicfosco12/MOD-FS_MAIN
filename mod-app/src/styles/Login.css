@@ -21,7 +21,7 @@ body {
   min-height: 100vh;
   background:
     linear-gradient(rgba(6,8,18,0.92), rgba(6,8,18,0.92)),
-    url('../assets/logo.png') center/cover no-repeat,
+    url('@/assets/logo.png') center/cover no-repeat,
     radial-gradient(1200px 900px at 65% 30%, rgba(121,168,255,.22), transparent 70%),
     radial-gradient(900px 700px at 30% 70%, rgba(176,123,255,.18), transparent 72%),
     linear-gradient(180deg, var(--bg1), var(--bg0));

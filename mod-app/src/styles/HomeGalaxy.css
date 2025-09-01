@@ -9,7 +9,7 @@ body, html {
   background-color: #0A0E1A;
   color: #ffffff;
   height: 100%;
-  background-image: url('../assets/MODGridBGplain.png');
+  background-image: url('@/assets/MODGridBGplain.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
