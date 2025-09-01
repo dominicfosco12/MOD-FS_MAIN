@@ -1,0 +1,30 @@
+.builder-tile {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  padding: 24px;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.builder-tile:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 24px rgba(0, 140, 255, 0.25);
+}
+
+.tile-icon {
+  font-size: 2rem;
+  margin-bottom: 12px;
+}
+
+.tile-title {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #e3f3ff;
+}
+
+.tile-desc {
+  font-size: 0.95rem;
+  color: var(--muted);
+}

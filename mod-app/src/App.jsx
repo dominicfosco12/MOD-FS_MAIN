@@ -4,6 +4,7 @@ import ProtectedRoute from './routes/ProtectedRoute'
 import HomeGalaxy from './pages/HomeGalaxy'
 import Login from './pages/Login'
 import Testing from './components/Testing'
+import MODCreationCenter from './pages/MODCreationCenter'
 
 
 
@@ -15,6 +16,8 @@ export default function App() {
           <Route path='/login' element={<Login />} />
           <Route element={<ProtectedRoute />}>
             <Route path='/' element={<HomeGalaxy />} />
+            <Route path='/create' element={<MODCreationCenter />} />
+
             <Route path="/testing" element={<Testing />} />
 
             {/* add more protected routes here */}

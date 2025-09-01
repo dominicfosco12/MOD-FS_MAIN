@@ -1,4 +1,3 @@
-// src/pages/HomeGalaxy.jsx
 import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../services/supabaseClient'
 import { useNavigate } from 'react-router-dom'
@@ -8,6 +7,8 @@ import {
 } from 'react-icons/fa'
 import '../styles/HomeGalaxy.css'
 import MODlogo from '../assets/MODlogo.png'
+import avatar from '../assets/avatar.png'
+import FirmChat from '../components/FirmChat'
 
 const PRIMARY = [
   { key: 'pms', title: 'MOD-PMS', hint: 'Portfolio Management System', icon: <FaChartPie />, variant: 'blue' },
@@ -15,6 +16,7 @@ const PRIMARY = [
   { key: 'ems', title: 'MOD-EMS', hint: 'Execution Management System', icon: <FaBolt />, variant: 'teal' }
 ]
 
+// SECONDARY is using border+white background so just ensure `variant` is set
 const SECONDARY = [
   { key: 'risk', title: 'MOD-RISK', hint: 'Risk & Analytics', icon: <FaChartLine />, variant: 'indigo' },
   { key: 'ops', title: 'MOD-OPS', hint: 'Operations & Reconciliation', icon: <FaCogs />, variant: 'orange' },
@@ -23,10 +25,13 @@ const SECONDARY = [
   { key: 'config', title: 'MOD-CONFIG', hint: 'Configuration & Admin', icon: <FaSlidersH />, variant: 'amber' }
 ]
 
+
+
 export default function HomeGalaxy() {
   const [email, setEmail] = useState('')
   const [today, setToday] = useState('')
-  const [firm, setFirm] = useState('—')
+  const [firmName, setFirmName] = useState('—')
+  const [firmId, setFirmId] = useState(null)
   const [role, setRole] = useState('—')
   const nav = useNavigate()
 
@@ -47,7 +52,10 @@ export default function HomeGalaxy() {
       if (firmId) {
         const { data: firmRow } = await supabase
           .from('firms').select('name').eq('id', firmId).maybeSingle()
-        if (firmRow?.name) setFirm(firmRow.name)
+        if (firmRow?.name) {
+          setFirmName(firmRow.name)
+          setFirmId(firmId)
+        }
       }
 
       let roleRow
@@ -69,7 +77,7 @@ export default function HomeGalaxy() {
     })()
   }, [])
 
-  function logout() {
+  const logout = () => {
     supabase.auth.signOut()
     nav('/login', { replace: true })
   }
@@ -80,9 +88,11 @@ export default function HomeGalaxy() {
     <div className='hub-wrap'>
       <header className='hub-header'>
         <div className='brand-left'>
-          <span className='brand-title'>{firm}</span>
+          <span className='brand-title'>{firmName}</span>
         </div>
+
         <div />
+
         <div className='header-right'>
           <span className='date'>{today}</span>
           {email && (
@@ -97,7 +107,14 @@ export default function HomeGalaxy() {
               )}
             </>
           )}
-          <button className='btn btn-logout' onClick={logout}>Logout</button>
+
+          <div className='profile-dropdown'>
+            <img src={avatar} alt='User' className='avatar' />
+            <div className='dropdown-menu'>
+              <button onClick={() => nav('/settings')}>Settings</button>
+              <button onClick={logout}>Logout</button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -131,6 +148,9 @@ export default function HomeGalaxy() {
             </div>
           ))}
         </section>
+
+        {/* ✅ Only show chat when firmId is ready */}
+        {firmId && <FirmChat firmId={firmId} />}
       </main>
     </div>
   )

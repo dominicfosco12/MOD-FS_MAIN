@@ -1,0 +1,18 @@
+.mod-create-wrap {
+  padding: 40px;
+  color: var(--text);
+}
+
+.create-header {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 32px;
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
