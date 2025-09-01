@@ -1,23 +1,26 @@
-import React, { useEffect, useRef, useState } from 'react'
+// src/pages/HomeGalaxy.jsx
+import { useEffect, useState, useRef } from 'react'
 import { supabase } from '../services/supabaseClient'
 import { useNavigate } from 'react-router-dom'
-import { FaChartPie, FaExchangeAlt, FaBolt } from 'react-icons/fa'
-import SpaceBackground from '../components/SpaceBackground'
-import logo from '../assets/logo.png'
+import {
+  FaChartPie, FaExchangeAlt, FaBolt,
+  FaChartLine, FaCogs, FaBrain, FaDatabase, FaSlidersH
+} from 'react-icons/fa'
 import '../styles/HomeGalaxy.css'
+import MODlogo from '../assets/MODlogo.png'
 
 const PRIMARY = [
-  { key: 'pms', title: 'MOD-PMS', hint: 'Portfolio Management System', variant: 'blue',  icon: <FaChartPie /> },
-  { key: 'oms', title: 'MOD-OMS', hint: 'Order Management System',   variant: 'violet', icon: <FaExchangeAlt /> },
-  { key: 'ems', title: 'MOD-EMS', hint: 'Execution Management System',variant: 'teal',  icon: <FaBolt /> }
+  { key: 'pms', title: 'MOD-PMS', hint: 'Portfolio Management System', icon: <FaChartPie />, variant: 'blue' },
+  { key: 'oms', title: 'MOD-OMS', hint: 'Order Management System', icon: <FaExchangeAlt />, variant: 'violet' },
+  { key: 'ems', title: 'MOD-EMS', hint: 'Execution Management System', icon: <FaBolt />, variant: 'teal' }
 ]
 
 const SECONDARY = [
-  { key: 'risk',   title: 'MOD-RISK',   hint: 'Risk & Analytics' },
-  { key: 'ops',    title: 'MOD-OPS',    hint: 'Operations & Reconciliation' },
-  { key: 'ai',     title: 'MOD-AI',     hint: 'AI & Predictive Insights' },
-  { key: 'data',   title: 'MOD-DATA',   hint: 'Data Lake & Feeds' },
-  { key: 'config', title: 'MOD-CONFIG', hint: 'Configuration & Admin' }
+  { key: 'risk', title: 'MOD-RISK', hint: 'Risk & Analytics', icon: <FaChartLine />, variant: 'indigo' },
+  { key: 'ops', title: 'MOD-OPS', hint: 'Operations & Reconciliation', icon: <FaCogs />, variant: 'orange' },
+  { key: 'ai', title: 'MOD-AI', hint: 'AI & Predictive Insights', icon: <FaBrain />, variant: 'fuchsia' },
+  { key: 'data', title: 'MOD-DATA', hint: 'Data Lake & Feeds', icon: <FaDatabase />, variant: 'cyan' },
+  { key: 'config', title: 'MOD-CONFIG', hint: 'Configuration & Admin', icon: <FaSlidersH />, variant: 'amber' }
 ]
 
 export default function HomeGalaxy() {
@@ -32,22 +35,21 @@ export default function HomeGalaxy() {
       const { data: u } = await supabase.auth.getUser()
       const uid = u?.user?.id
       setEmail(u?.user?.email ?? '')
-      setToday(
-        new Date().toLocaleDateString(undefined, {
-          weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
-        })
-      )
+      setToday(new Date().toLocaleDateString(undefined, {
+        weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+      }))
       if (!uid) return
-      // firm
+
       const { data: userRow } = await supabase
         .from('users').select('firm_id').eq('id', uid).maybeSingle()
       const firmId = userRow?.firm_id
+
       if (firmId) {
         const { data: firmRow } = await supabase
           .from('firms').select('name').eq('id', firmId).maybeSingle()
         if (firmRow?.name) setFirm(firmRow.name)
       }
-      // role (prefer firm)
+
       let roleRow
       if (firmId) {
         const { data } = await supabase
@@ -67,8 +69,8 @@ export default function HomeGalaxy() {
     })()
   }, [])
 
-  async function logout() {
-    await supabase.auth.signOut()
+  function logout() {
+    supabase.auth.signOut()
     nav('/login', { replace: true })
   }
 
@@ -76,18 +78,11 @@ export default function HomeGalaxy() {
 
   return (
     <div className='hub-wrap'>
-      <SpaceBackground />
-
-      {/* Header: glass dock (logo+firm left, tagline center, user/date right) */}
       <header className='hub-header'>
         <div className='brand-left'>
-          <img src={logo} alt='MOD' className='brand-logo' />
           <span className='brand-title'>{firm}</span>
         </div>
-
-        <div className='header-center'>
-        </div>
-
+        <div />
         <div className='header-right'>
           <span className='date'>{today}</span>
           {email && (
@@ -106,8 +101,11 @@ export default function HomeGalaxy() {
         </div>
       </header>
 
-      {/* Main */}
       <main className='hub-main'>
+        <div className='logo-center'>
+          <img src={MODlogo} alt='MOD logo' className='modlogo' />
+        </div>
+
         <section className='primary-row primary-feature'>
           {PRIMARY.map(m => (
             <PrimaryCard key={m.key} data={m} onOpen={() => go(m.key)} />
@@ -118,14 +116,18 @@ export default function HomeGalaxy() {
           {SECONDARY.map(m => (
             <div
               key={m.key}
-              className='sec-pill'
+              className={`sec-pill pill-${m.variant}`}
+              data-variant={m.variant}
               onClick={() => go(m.key)}
               role='link'
               tabIndex={0}
               onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && go(m.key)}
             >
-              <div className='sp-title'>{m.title}</div>
-              <div className='sp-hint'>{m.hint}</div>
+              <span className='pill-ico'>{m.icon}</span>
+              <div className='pill-text'>
+                <div className='sp-title'>{m.title}</div>
+                <div className='sp-hint'>{m.hint}</div>
+              </div>
             </div>
           ))}
         </section>
@@ -134,7 +136,6 @@ export default function HomeGalaxy() {
   )
 }
 
-/** Fancy primary card (micro-tilt, shine, sparkles) */
 function PrimaryCard({ data, onOpen }) {
   const cardRef = useRef(null)
 

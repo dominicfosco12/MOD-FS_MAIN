@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthProvider'
 import { supabase } from '../services/supabaseClient'
-import '../styles/Login.css'   // keep CSS separate as you prefer
+import '../styles/Login.css'
 import logo from '../assets/logo.png'
 
 export default function Login() {
@@ -29,26 +29,27 @@ export default function Login() {
 
   return (
     <div className="min-vh-100 d-flex align-items-center justify-content-center galaxy-bg">
-      <div className="card border-0 shadow-lg" style={{maxWidth: 460, width: '100%'}}>
+      <div className="card border-0 shadow-lg login-card" style={{ maxWidth: 460, width: '100%' }}>
         <div className="card-body p-4">
           <div className='text-center mb-3'>
-            <img src={logo} alt='MOD' style={{height:60, filter:'drop-shadow(0 0 10px rgba(90,160,255,.6))'}} />
+            <h5 className='login-title'>Welcome to MOD</h5>
           </div>
-          <h5 className='text-center mb-1'>Sign in to MOD</h5>
-          <div className='text-center text-muted mb-3' style={{fontSize:12}}>Automation • Connectivity • Performance</div>
 
           <form onSubmit={onSubmit}>
             <label className='form-label'>Email</label>
-            <input className='form-control mb-2' type='email' value={email} onChange={e=>setEmail(e.target.value)} required />
+            <input className='form-control mb-2' type='email' value={email} onChange={e => setEmail(e.target.value)} required />
+
             <label className='form-label'>Password</label>
-            <input className='form-control mb-3' type='password' value={password} onChange={e=>setPassword(e.target.value)} required />
+            <input className='form-control mb-3' type='password' value={password} onChange={e => setPassword(e.target.value)} required />
+
             {error && <div className='alert alert-danger py-2'>{error}</div>}
+
             <button className='btn btn-primary w-100' disabled={busy}>
               {busy ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
 
-          <div className='text-center text-muted mt-2' style={{fontSize:12}}>
+          <div className='text-center text-muted mt-2' style={{ fontSize: 12 }}>
             Trouble signing in? Ensure your Supabase Auth user exists.
           </div>
         </div>
