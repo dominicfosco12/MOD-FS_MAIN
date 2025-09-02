@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './context/AuthProvider'
 import ProtectedRoute from './routes/ProtectedRoute'
-import HomeGalaxy from './pages/HomeGalaxy'
+import HomeGalaxy from './pages/Home'
 import Login from './pages/Login'
 import Testing from './components/Testing'
 import MODCreationCenter from './pages/MODCreationCenter'

@@ -1,0 +1,98 @@
+.creation-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 999;
+}
+
+.creation-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 300px;
+  background: rgba(0, 0, 0, 0.95);
+  box-shadow: 0 0 12px rgba(0, 191, 255, 0.3);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1001; /* Make sure it's higher than the button */
+}
+
+.creation-panel.open {
+  transform: translateX(0);
+}
+
+
+.creation-panel.slide-in {
+  transform: translateX(0);
+}
+
+
+.creation-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  margin-bottom: 20px;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #00bfff;
+  cursor: pointer;
+}
+
+.creation-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.creation-option {
+  background: #111933;
+  padding: 12px 16px;
+  color: #fff;
+  border: 1px solid #00bfff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.creation-option:hover {
+  background: #0d1c3c;
+}
+
+
+.creation-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #111933;
+  padding: 12px 16px;
+  color: #e0f3ff;
+  border: 1px solid #00bfff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.creation-option:hover {
+  background: #0d1c3c;
+  transform: translateX(4px);
+  box-shadow: 0 0 10px rgba(0, 191, 255, 0.4);
+}
+
+.option-icon {
+  font-size: 1.2rem;
+  color: #00bfff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.option-label {
+  flex: 1;
+}

@@ -1,38 +1,35 @@
 import { useEffect, useState, useRef } from 'react'
-import { supabase } from '@/services/supabaseClient'
 import { useNavigate } from 'react-router-dom'
-import {
-  FaChartPie, FaExchangeAlt, FaBolt,
-  FaChartLine, FaCogs, FaBrain, FaDatabase, FaSlidersH
-} from 'react-icons/fa'
-import '@/styles/HomeGalaxy.css'
+import { supabase } from '@/services/supabaseClient'
+
 import MODlogo from '@/assets/MODlogo.png'
 import avatar from '@/assets/avatar.png'
+
 import FirmChat from '@/components/FirmChat'
+import SideModuleRail from '@/components/SideModuleRail'
+
+import {
+  FaChartPie, FaExchangeAlt, FaBolt,
+  FaChartLine, FaCogs
+} from 'react-icons/fa'
+
+import '@/styles/Home.css'
 
 const PRIMARY = [
   { key: 'pms', title: 'MOD-PMS', hint: 'Portfolio Management System', icon: <FaChartPie />, variant: 'blue' },
-  { key: 'oms', title: 'MOD-OMS', hint: 'Order Management System', icon: <FaExchangeAlt />, variant: 'violet' },
-  { key: 'ems', title: 'MOD-EMS', hint: 'Execution Management System', icon: <FaBolt />, variant: 'teal' }
+  { key: 'oms', title: 'MOD-OMS', hint: 'Order Management System', icon: <FaExchangeAlt />, variant: 'blue' },
+  { key: 'ems', title: 'MOD-EMS', hint: 'Execution Management System', icon: <FaBolt />, variant: 'blue' },
+  { key: 'risk', title: 'MOD-RISK', hint: 'Risk & Analytics', icon: <FaChartLine />, variant: 'blue' },
+  { key: 'ops', title: 'MOD-OPS', hint: 'Operations & Reconciliation', icon: <FaCogs />, variant: 'blue' }
 ]
 
-// SECONDARY is using border+white background so just ensure `variant` is set
-const SECONDARY = [
-  { key: 'risk', title: 'MOD-RISK', hint: 'Risk & Analytics', icon: <FaChartLine />, variant: 'indigo' },
-  { key: 'ops', title: 'MOD-OPS', hint: 'Operations & Reconciliation', icon: <FaCogs />, variant: 'orange' },
-  { key: 'ai', title: 'MOD-AI', hint: 'AI & Predictive Insights', icon: <FaBrain />, variant: 'fuchsia' },
-  { key: 'data', title: 'MOD-DATA', hint: 'Data Lake & Feeds', icon: <FaDatabase />, variant: 'cyan' },
-  { key: 'config', title: 'MOD-CONFIG', hint: 'Configuration & Admin', icon: <FaSlidersH />, variant: 'amber' }
-]
-
-
-
-export default function HomeGalaxy() {
+export default function Home() {
   const [email, setEmail] = useState('')
   const [today, setToday] = useState('')
   const [firmName, setFirmName] = useState('—')
   const [firmId, setFirmId] = useState(null)
   const [role, setRole] = useState('—')
+
   const nav = useNavigate()
 
   useEffect(() => {
@@ -119,42 +116,26 @@ export default function HomeGalaxy() {
       </header>
 
       <main className='hub-main'>
-        <div className='logo-center'>
-          <img src={MODlogo} alt='MOD logo' className='modlogo' />
+
+        <div className='center-logo'>
+          <img src={MODlogo} alt='MOD logo' className='modlogo-lg' />
         </div>
 
-        <section className='primary-row primary-feature'>
-          {PRIMARY.map(m => (
-            <PrimaryCard key={m.key} data={m} onOpen={() => go(m.key)} />
-          ))}
-        </section>
-
-        <section className='secondary-nav'>
-          {SECONDARY.map(m => (
-            <div
-              key={m.key}
-              className={`sec-pill pill-${m.variant}`}
-              data-variant={m.variant}
-              onClick={() => go(m.key)}
-              role='link'
-              tabIndex={0}
-              onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && go(m.key)}
-            >
-              <span className='pill-ico'>{m.icon}</span>
-              <div className='pill-text'>
-                <div className='sp-title'>{m.title}</div>
-                <div className='sp-hint'>{m.hint}</div>
-              </div>
+        <section className='orbit-layout'>
+          {PRIMARY.map((m, i) => (
+            <div key={m.key} className={`orbit-pos orbit-${i}`}>
+              <PrimaryCard data={m} onOpen={() => go(m.key)} />
             </div>
           ))}
         </section>
 
-        {/* ✅ Only show chat when firmId is ready */}
         {firmId && <FirmChat firmId={firmId} />}
+        <SideModuleRail />
       </main>
     </div>
   )
 }
+
 
 function PrimaryCard({ data, onOpen }) {
   const cardRef = useRef(null)
@@ -169,8 +150,6 @@ function PrimaryCard({ data, onOpen }) {
     const py = y / r.height - 0.5
     el.style.setProperty('--rx', `${-py * 8}deg`)
     el.style.setProperty('--ry', `${px * 12}deg`)
-    el.style.setProperty('--mx', `${px}`)
-    el.style.setProperty('--my', `${py}`)
   }
 
   const reset = () => {
@@ -178,8 +157,6 @@ function PrimaryCard({ data, onOpen }) {
     if (!el) return
     el.style.setProperty('--rx', '0deg')
     el.style.setProperty('--ry', '0deg')
-    el.style.setProperty('--mx', '0')
-    el.style.setProperty('--my', '0')
   }
 
   return (
@@ -188,11 +165,9 @@ function PrimaryCard({ data, onOpen }) {
       className={`primary-card ep ${data.variant}`}
       onMouseMove={onMove}
       onMouseLeave={reset}
-      onFocus={reset}
       onClick={onOpen}
       role='link'
       tabIndex={0}
-      onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onOpen()}
       aria-label={`${data.title}. ${data.hint}`}
       style={{ transform: `rotateX(var(--rx)) rotateY(var(--ry))` }}
     >

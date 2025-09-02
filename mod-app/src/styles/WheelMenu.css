@@ -1,0 +1,75 @@
+.wheel-menu {
+  position: fixed;
+  top: 80px;
+  left: 40px;
+  z-index: 1001;
+}
+
+.center-btn {
+  background: #00bfff;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  font-size: 24px;
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 0 10px #00bfff, 0 0 20px #00bfff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+.center-btn:hover {
+  transform: scale(1.1) rotate(30deg);
+}
+
+.wheel-items {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
+.wheel-item {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  background: rgba(0, 20, 50, 0.95);
+  border: 1px solid #00bfff;
+  box-shadow: 0 0 8px #00bfff66;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  text-align: center;
+}
+
+.wheel-item:hover {
+  transform: scale(1.1);
+  background: rgba(0, 40, 80, 0.95);
+  box-shadow: 0 0 14px #00bfffcc;
+}
+
+.wheel-item .icon {
+  font-size: 22px;
+  margin-bottom: 6px;
+  color: #0ff;
+}
+
+.wheel-item .label {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+
+.wheel-menu.bottom-center {
+  position: absolute;
+  top: 360px; /* adjust depending on logo size */
+  left: 50%;
+  transform: translateX(-50%);
+}

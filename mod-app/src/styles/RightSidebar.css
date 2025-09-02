@@ -1,0 +1,50 @@
+/* src/styles/RightSidebar.css */
+.right-sidebar {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 10px 6px;
+  background: rgba(0, 10, 30, 0.9);
+  border: 1px solid #00BFFF88;
+  border-radius: 12px;
+  box-shadow: 0 0 12px #00BFFF66;
+  z-index: 999;
+}
+
+.sidebar-item {
+  background: #020d1b;
+  border: 1px solid #00BFFF;
+  color: #00BFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  font-size: 11px;
+  font-family: 'Segoe UI', sans-serif;
+  width: 70px;
+  text-align: center;
+  box-shadow: 0 0 4px #00BFFF44;
+  cursor: pointer;
+}
+
+.sidebar-item:hover {
+  background: #031d35;
+  transform: translateY(-1px) scale(1.04);
+  box-shadow: 0 0 8px #00BFFFaa, 0 0 14px #00BFFF88;
+}
+
+.sidebar-item .icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+.sidebar-item .label {
+  font-size: 10px;
+  opacity: 0.85;
+}
