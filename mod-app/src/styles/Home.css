@@ -248,3 +248,90 @@ body, html {
 .orbit-2 { transform: translate(0, -160px); }
 .orbit-3 { transform: translate(-120px, 140px); }
 .orbit-4 { transform: translate(120px, 140px); }
+
+/* === Core modules grid under center logo === */
+.core-grid{
+  margin-top: 18px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(200px, 1fr));
+  gap: 16px;
+  justify-items: center;
+}
+@media (max-width: 1400px){
+  .core-grid{ grid-template-columns: repeat(3, minmax(220px, 1fr)); }
+}
+@media (max-width: 900px){
+  .core-grid{ grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+}
+@media (max-width: 560px){
+  .core-grid{ grid-template-columns: 1fr; }
+}
+
+.core-cell{
+  width: 100%;
+  display: flex;
+}
+
+/* Reuse existing .primary-card visuals; ensure consistent accent */
+.primary-card.blue{
+  --accent: #00BFFF;
+  border-left: 3px solid var(--accent);
+}
+
+/* === Expandable tools tray === */
+.tools-tray{
+  margin-top: 18px;
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows .28s cubic-bezier(.2,.8,.2,1);
+}
+.tools-tray.open{ grid-template-rows: 1fr; }
+.tools-inner{ overflow: hidden; }
+
+.tools-inner{
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  padding: 14px 16px;
+  box-shadow: 0 8px 26px rgba(0,0,0,0.35), 0 0 40px rgba(0,191,255,0.12);
+}
+
+.tools-head{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom: 8px;
+}
+
+.tools-badge{
+  display:inline-block;
+  font-weight: 800;
+  letter-spacing: .3px;
+  color: #00131D;
+  background: #00BFFF;
+  padding: 6px 10px;
+  border-radius: 999px;
+  box-shadow: 0 0 24px rgba(0,191,255,.35);
+}
+
+.tools-links{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tool-link{
+  display:inline-block;
+  font-size:.92rem;
+  padding: 8px 12px;
+  border: 1px solid rgba(255,255,255,.22);
+  color: #E8F2FF;
+  background: rgba(255,255,255,.02);
+  border-radius: 10px;
+  text-decoration:none;
+}
+.tool-link:hover{
+  border-color:#00BFFF;
+  background:#00BFFF;
+  color:#00131D;
+}

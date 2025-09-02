@@ -23,91 +23,101 @@ const PRIMARY = [
   { key: 'ops', title: 'MOD-OPS', hint: 'Operations & Reconciliation', icon: <FaCogs />, variant: 'blue' }
 ]
 
+// Tools visible when a core module is expanded
+const TOOLS_BY_MODULE = {
+  pms: [
+    { label: 'Portfolios & Accounts', route: '/portfolios' },
+    { label: 'Cash Balances', route: '/cash' },
+    { label: 'Reporting', route: '/reports' },
+    { label: 'Benchmarks', route: '/benchmarks' },
+  ],
+  oms: [
+    { label: 'Orders', route: '/orders' },
+    { label: 'Allocations', route: '/orders#allocations' },
+    { label: 'Compliance Checks', route: '/compliance' },
+    { label: 'Approvals', route: '/approvals' },
+  ],
+  ems: [
+    { label: 'Routes', route: '/execution/routes' },
+    { label: 'Brokers', route: '/execution/brokers' },
+    { label: 'Executions', route: '/executions' },
+    { label: 'TCA', route: '/tca' },
+  ],
+  risk: [
+    { label: 'Exposures', route: '/risk/exposures' },
+    { label: 'Limits', route: '/risk/limits' },
+    { label: 'Scenarios', route: '/risk/scenarios' },
+    { label: 'VaR', route: '/risk/var' },
+  ],
+  ops: [
+    { label: 'Reconciliation', route: '/ops/recon' },
+    { label: 'Corporate Actions', route: '/ops/corp-actions' },
+    { label: 'Pricing Feeds', route: '/ops/feeds' },
+    { label: 'Audit Logs', route: '/audit' },
+  ],
+};
+
 export default function Home() {
   const [email, setEmail] = useState('')
   const [today, setToday] = useState('')
   const [firmName, setFirmName] = useState('—')
   const [firmId, setFirmId] = useState(null)
   const [role, setRole] = useState('—')
+  const [openKey, setOpenKey] = useState(null)
 
   const nav = useNavigate()
 
   useEffect(() => {
     ;(async () => {
       const { data: u } = await supabase.auth.getUser()
-      const uid = u?.user?.id
-      setEmail(u?.user?.email ?? '')
-      setToday(new Date().toLocaleDateString(undefined, {
-        weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
-      }))
-      if (!uid) return
+      const authedEmail = u?.user?.email || ''
+      setEmail(authedEmail)
 
-      const { data: userRow } = await supabase
-        .from('users').select('firm_id').eq('id', uid).maybeSingle()
-      const firmId = userRow?.firm_id
+      const resp = await supabase
+        .from('users')
+        .select('firm_id, firms(name), roles(name)')
+        .eq('email', authedEmail)
+        .single()
 
-      if (firmId) {
-        const { data: firmRow } = await supabase
-          .from('firms').select('name').eq('id', firmId).maybeSingle()
-        if (firmRow?.name) {
-          setFirmName(firmRow.name)
-          setFirmId(firmId)
-        }
+      if (resp?.data) {
+        setFirmId(resp.data.firm_id || null)
+        setFirmName(resp.data.firms?.name || '—')
+        setRole(resp.data.roles?.name || '—')
       }
 
-      let roleRow
-      if (firmId) {
-        const { data } = await supabase
-          .from('user_roles').select('role_id').eq('user_id', uid).eq('firm_id', firmId).limit(1)
-        roleRow = data?.[0]
-      }
-      if (!roleRow) {
-        const { data } = await supabase
-          .from('user_roles').select('role_id').eq('user_id', uid).limit(1)
-        roleRow = data?.[0]
-      }
-      if (roleRow?.role_id) {
-        const { data } = await supabase
-          .from('roles').select('name').eq('id', roleRow.role_id).maybeSingle()
-        if (data?.name) setRole(data.name)
-      }
+      const d = new Date()
+      setToday(d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric', year:'numeric' }))
     })()
   }, [])
 
-  const logout = () => {
+  function logout() {
     supabase.auth.signOut()
     nav('/login', { replace: true })
   }
 
-  const go = key => nav(`/${key}`)
+  const go = key => nav(`/${key}`) // still available if you want to wire a “Go” button later
 
   return (
     <div className='hub-wrap'>
       <header className='hub-header'>
         <div className='brand-left'>
           <span className='brand-title'>{firmName}</span>
+          <span className='brand-sub'>{today}</span>
         </div>
 
-        <div />
+        <div className='brand-center'>
+          <span className='brand-name'>MOD</span>
+          <span className='brand-tag'>Fintech Solutions</span>
+        </div>
 
-        <div className='header-right'>
-          <span className='date'>{today}</span>
-          {email && (
-            <>
-              <span className='sep'>•</span>
-              <span className='email'>{email}</span>
-              {role && role !== '—' && (
-                <>
-                  <span className='sep'>|</span>
-                  <span className='role'>{role}</span>
-                </>
-              )}
-            </>
-          )}
-
-          <div className='profile-dropdown'>
-            <img src={avatar} alt='User' className='avatar' />
-            <div className='dropdown-menu'>
+        <div className='brand-right'>
+          <div className='profile' tabIndex={0}>
+            <img src={avatar} alt='user' className='avatar' />
+            <div className='profile-info'>
+              <div className='email'>{email}</div>
+              <div className='role'>{role}</div>
+            </div>
+            <div className='profile-dropdown'>
               <button onClick={() => nav('/settings')}>Settings</button>
               <button onClick={logout}>Logout</button>
             </div>
@@ -121,12 +131,36 @@ export default function Home() {
           <img src={MODlogo} alt='MOD logo' className='modlogo-lg' />
         </div>
 
-        <section className='orbit-layout'>
-          {PRIMARY.map((m, i) => (
-            <div key={m.key} className={`orbit-pos orbit-${i}`}>
-              <PrimaryCard data={m} onOpen={() => go(m.key)} />
+        {/* NEW: 5-core grid under logo */}
+        <section className='core-grid'>
+          {PRIMARY.map((m) => (
+            <div key={m.key} className='core-cell'>
+              <PrimaryCard
+                data={m}
+                onOpen={() => setOpenKey(prev => (prev === m.key ? null : m.key))}
+              />
             </div>
           ))}
+        </section>
+
+        {/* NEW: expandable tools tray */}
+        <section className={`tools-tray ${openKey ? 'open' : ''}`}>
+          {openKey && (
+            <div className='tools-inner'>
+              <div className='tools-head'>
+                <span className='tools-badge'>
+                  {PRIMARY.find(x => x.key === openKey)?.title}
+                </span>
+              </div>
+              <nav className='tools-links'>
+                {TOOLS_BY_MODULE[openKey]?.map(t => (
+                  <a key={t.label} href={t.route} className='tool-link'>
+                    {t.label}
+                  </a>
+                ))}
+              </nav>
+            </div>
+          )}
         </section>
 
         {firmId && <FirmChat firmId={firmId} />}
@@ -135,7 +169,6 @@ export default function Home() {
     </div>
   )
 }
-
 
 function PrimaryCard({ data, onOpen }) {
   const cardRef = useRef(null)
