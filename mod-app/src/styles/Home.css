@@ -8,12 +8,8 @@ body, html {
   color: #ffffff;
   height: 100%;
   overflow: hidden;
-background-image: none;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-attachment: fixed;
-  background-blend-mode: lighten;
 }
+
 
 
 .hub-wrap::before {
@@ -24,9 +20,9 @@ background-image: none;
   width: 100%;
   height: calc(100vh - 64px);
   background: radial-gradient(circle at center, rgba(0, 191, 255, 0.05), transparent 70%), 
-            url('@/assets/logo.png') center/70% no-repeat;
+            url('@/assets/MODBGweb.png') center/70% no-repeat;
 
-  background-size: 70%; /* smaller */
+  background-size: 100%; /* smaller */
   background-repeat: no-repeat;
   background-position: center;
   opacity: 0.15; /* softened */
@@ -37,7 +33,84 @@ background-image: none;
 
 
 
+/* === MODULE MODAL === */
+.module-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 50;
+  animation: fadeIn 0.2s ease-out;
+}
 
+.modal-content {
+  background: #0D111C;
+  padding: 32px 36px;
+  border-radius: 16px;
+  width: 440px;
+  border: 1px solid #00BFFF;
+  box-shadow: 0 0 28px rgba(0,191,255,0.3);
+  text-align: center;
+  animation: scaleIn 0.3s ease-out;
+}
+
+.icon-lg {
+  font-size: 36px;
+  color: #00BFFF;
+  margin-bottom: 12px;
+}
+
+.modal-sub {
+  font-size: 14px;
+  color: #aaa;
+  margin-bottom: 24px;
+}
+
+.modal-links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.modal-close {
+  padding: 8px 18px;
+  background: #00BFFF;
+  color: #00131D;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.modal-close:hover {
+  background: #00a7e6;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+.tray-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 12px;
+  position: relative;
+  z-index: 5;
+}
 
 
 
@@ -62,8 +135,8 @@ background-image: none;
   align-items: center;
   height: 64px;
   padding: 0 24px;
-  background: #090d17;
-  color: white;
+  background: #111827;
+  color: #111827;
   font-family: 'Inter', system-ui, sans-serif;
   position: relative;
   border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -161,13 +234,15 @@ background-image: none;
 
 .hub-main {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 36px 24px;
   height: calc(100vh - 64px);
   overflow: hidden;
   gap: 48px;
 }
+
 
 /* === MOD LOGO CENTER === */
 .center-logo {
@@ -239,15 +314,18 @@ background-image: none;
 
 /* === TOOLS TRAY (EXPANDED LINKS) === */
 .inline-tools-tray {
-  margin-top: 12px;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: 16px;
-  padding: 12px 14px;
-  width: 100%;
+  padding: 12px 16px;
+  width: 280px; /* Match or slightly wider than card */
   animation: expandFade 0.3s ease;
   box-shadow: 0 8px 26px rgba(0,0,0,0.35), 0 0 40px rgba(0,191,255,0.12);
+  backdrop-filter: blur(6px);
 }
+
+
+
 
 .tools-links {
   display: flex;
@@ -324,8 +402,12 @@ background-image: none;
 }
 
 .core-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   position: relative;
 }
+
 
 .right-canvas {
   flex: 1;
@@ -390,4 +472,42 @@ background-image: none;
   border-radius: 12px;
   padding: 16px;
   box-shadow: 0 0 20px rgba(0,191,255, 0.08);
+}
+/* === CORE MODULES GRID (HORIZONTAL) === */
+.core-grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+  margin-top: 64px;
+}
+.primary-card.glass {
+  width: 300px;
+  height: 200px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(0, 191, 255, 0.3);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 0 18px rgba(0, 191, 255, 0.2);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.primary-card.glass:hover {
+  box-shadow: 0 0 30px rgba(0, 191, 255, 0.5);
+  transform: translateY(-8px);
+}
+
+.primary-card.glass .pc-title {
+  font-size: 18px;
+}
+
+.primary-card.glass .pc-hint {
+  font-size: 13px;
+  color: #aaa;
+}
+
+.primary-card.glass .icon {
+  font-size: 36px;
+  color: #00BFFF;
+  margin-bottom: 10px;
 }

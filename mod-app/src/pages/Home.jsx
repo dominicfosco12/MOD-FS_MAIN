@@ -13,17 +13,12 @@ import {
 
 import '@/styles/Home.css'
 
-import LiveKPIs from '@/components/widgets/LiveKPIs'
-import FirmAlerts from '@/components/widgets/FirmAlerts'
-
-
 const PRIMARY = [
-  { key: 'pms', title: 'MOD-PMS', hint: 'Portfolio Management System', icon: <FaChartPie />, variant: 'blue' },
-  { key: 'oms', title: 'MOD-OMS', hint: 'Order Management System', icon: <FaExchangeAlt />, variant: 'blue' },
-  { key: 'ems', title: 'MOD-EMS', hint: 'Execution Management System', icon: <FaBolt />, variant: 'blue' },
-  { key: 'risk', title: 'MOD-RISK', hint: 'Risk & Analytics', icon: <FaChartLine />, variant: 'blue' },
-  { key: 'ops', title: 'MOD-OPS', hint: 'Operations & Reconciliation', icon: <FaCogs />, variant: 'blue' }
+  { key: 'pms', title: 'MOD-PMS', hint: 'Portfolio Management System', icon: <FaChartPie />, variant: 'glass' },
+  { key: 'oms', title: 'MOD-OMS', hint: 'Order Management System', icon: <FaExchangeAlt />, variant: 'glass' },
+  { key: 'ems', title: 'MOD-EMS', hint: 'Execution Management System', icon: <FaBolt />, variant: 'glass' },
 ]
+
 
 const TOOLS_BY_MODULE = {
   pms: [
@@ -64,7 +59,7 @@ export default function Home() {
   const [firmName, setFirmName] = useState('—')
   const [firmId, setFirmId] = useState(null)
   const [role, setRole] = useState('—')
-  const [openKey, setOpenKey] = useState(null)
+  const [focusedModule, setFocusedModule] = useState(null)
 
   const nav = useNavigate()
 
@@ -119,8 +114,6 @@ export default function Home() {
           <span className='today-date'>{today}</span>
         </div>
 
-
-
         <div className='header-right'>
           <div className='profile'>
             <img src={avatar} alt='user' className='avatar' />
@@ -136,53 +129,75 @@ export default function Home() {
         </div>
       </header>
 
-<main className='hub-main stacked-layout'>
-  <section className='left-panel'>
-    {PRIMARY.map((m) => {
-      const isOpen = openKey === m.key
-      return (
-        <div key={m.key} className='core-cell'>
-          <PrimaryCard
-            data={m}
-            onOpen={() => setOpenKey(prev => (prev === m.key ? null : m.key))}
-            isActive={isOpen}
-          />
-          {isOpen && (
-            <div className='inline-tools-tray'>
-              <nav className='tools-links'>
-                {TOOLS_BY_MODULE[m.key]?.map(t => (
-                  <Link key={t.label} to={t.route} className='tool-link'>
+      <main className='hub-main'>
+        <section className="core-grid">
+  {PRIMARY.filter(m => ['pms', 'oms', 'ems'].includes(m.key)).map((m) => (
+    <div key={m.key} className="core-cell">
+      <PrimaryCard
+        data={m}
+        onOpen={() => setFocusedModule(m)}
+        isActive={focusedModule?.key === m.key}
+      />
+
+    {focusedModule?.key === m.key && (
+      <div className="tray-wrapper">
+        <div className="inline-tools-tray">
+          <div className="tools-links">
+            {TOOLS_BY_MODULE[m.key]?.map((tool) => (
+              <Link
+                key={tool.label}
+                to={tool.route}
+                className="tool-link"
+                onClick={() => setFocusedModule(null)}
+              >
+                {tool.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    </div>
+  ))}
+</section>
+
+        {firmId && (
+          <div className='chat-wrapper'>
+            <FirmChat firmId={firmId} />
+          </div>
+        )}
+
+        {focusedModule && (
+          <div className='module-modal' onClick={() => setFocusedModule(null)}>
+            <div className='modal-content' onClick={e => e.stopPropagation()}>
+              <div className='icon-lg'>{focusedModule.icon}</div>
+              <h2>{focusedModule.title}</h2>
+              <p className='modal-sub'>{focusedModule.hint}</p>
+
+              <div className='modal-links'>
+                {TOOLS_BY_MODULE[focusedModule.key]?.map(t => (
+                  <Link
+                    key={t.label}
+                    to={t.route}
+                    className='tool-link'
+                    onClick={() => setFocusedModule(null)}
+                  >
                     {t.label}
                   </Link>
                 ))}
-              </nav>
+              </div>
+
+              <button className='modal-close' onClick={() => setFocusedModule(null)}>Close</button>
             </div>
-          )}
-        </div>
-      )
-    })}
-  </section>
-
-
-
-
-<div className='right-widgets-panel'>
-    <LiveKPIs />
-    <FirmAlerts />
-</div>
-
-  {firmId && (
-    <div className='chat-wrapper'>
-      <FirmChat firmId={firmId} />
-    </div>
-  )}
-</main>
-
+          </div>
+        )}
+      </main>
     </div>
   )
 }
 
-function PrimaryCard({ data, onOpen, isActive }) {
+function PrimaryCard({ data, onOpen }) {
   const cardRef = useRef(null)
 
   const onMove = e => {
@@ -207,21 +222,15 @@ function PrimaryCard({ data, onOpen, isActive }) {
   return (
     <article
       ref={cardRef}
-      className={`primary-card ep ${data.variant} ${isActive ? 'active' : ''}`}
+      className={`primary-card ${data.variant}`}
       onMouseMove={onMove}
       onMouseLeave={reset}
       onClick={onOpen}
-      onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onOpen()}
       role='button'
       tabIndex={0}
       title={data.hint}
       style={{ transform: `rotateX(var(--rx)) rotateY(var(--ry))` }}
     >
-      <div className='border-anim' />
-      <div className='glow' />
-      <div className='shine' />
-      <div className='sparkles'><i /><i /><i /><i /><i /></div>
-
       <div className='icon'>{data.icon}</div>
       <h2 className='pc-title'>{data.title}</h2>
       <p className='pc-hint'>{data.hint}</p>
