@@ -1,12 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { supabase } from '@/services/supabaseClient'
 
-import MODlogo from '@/assets/MODlogo.png'
 import avatar from '@/assets/avatar.png'
 
 import FirmChat from '@/components/FirmChat'
-import SideModuleRail from '@/components/SideModuleRail'
 
 import {
   FaChartPie, FaExchangeAlt, FaBolt,
@@ -14,6 +12,10 @@ import {
 } from 'react-icons/fa'
 
 import '@/styles/Home.css'
+
+import LiveKPIs from '@/components/widgets/LiveKPIs'
+import FirmAlerts from '@/components/widgets/FirmAlerts'
+
 
 const PRIMARY = [
   { key: 'pms', title: 'MOD-PMS', hint: 'Portfolio Management System', icon: <FaChartPie />, variant: 'blue' },
@@ -23,7 +25,6 @@ const PRIMARY = [
   { key: 'ops', title: 'MOD-OPS', hint: 'Operations & Reconciliation', icon: <FaCogs />, variant: 'blue' }
 ]
 
-// Tools visible when a core module is expanded
 const TOOLS_BY_MODULE = {
   pms: [
     { label: 'Portfolios & Accounts', route: '/portfolios' },
@@ -55,7 +56,7 @@ const TOOLS_BY_MODULE = {
     { label: 'Pricing Feeds', route: '/ops/feeds' },
     { label: 'Audit Logs', route: '/audit' },
   ],
-};
+}
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -68,56 +69,66 @@ export default function Home() {
   const nav = useNavigate()
 
   useEffect(() => {
+    let isMounted = true
     ;(async () => {
       const { data: u } = await supabase.auth.getUser()
       const authedEmail = u?.user?.email || ''
-      setEmail(authedEmail)
+      if (isMounted) setEmail(authedEmail)
 
       const resp = await supabase
         .from('users')
-        .select('firm_id, firms(name), roles(name)')
+        .select(`
+          firm_id,
+          firm:firm_id ( name ),
+          user_roles (
+            role:role_id ( name )
+          )
+        `)
         .eq('email', authedEmail)
         .single()
 
-      if (resp?.data) {
+      if (resp?.data && isMounted) {
         setFirmId(resp.data.firm_id || null)
-        setFirmName(resp.data.firms?.name || '—')
-        setRole(resp.data.roles?.name || '—')
+        setFirmName(resp.data.firm?.name || '—')
+        setRole(resp.data.user_roles?.[0]?.role?.name || '—')
       }
 
       const d = new Date()
-      setToday(d.toLocaleDateString(undefined, { weekday:'long', month:'long', day:'numeric', year:'numeric' }))
+      if (isMounted) {
+        setToday(d.toLocaleDateString(undefined, {
+          weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+        }))
+      }
     })()
+
+    return () => {
+      isMounted = false
+    }
   }, [])
 
-  function logout() {
-    supabase.auth.signOut()
-    nav('/login', { replace: true })
+  const logout = async () => {
+    const { error } = await supabase.auth.signOut()
+    if (!error) nav('/login', { replace: true })
   }
-
-  const go = key => nav(`/${key}`) // still available if you want to wire a “Go” button later
 
   return (
     <div className='hub-wrap'>
       <header className='hub-header'>
-        <div className='brand-left'>
-          <span className='brand-title'>{firmName}</span>
-          <span className='brand-sub'>{today}</span>
+        <div className='header-left'>
+          <span className='firm-name'>{firmName}</span>
+          <span className='today-date'>{today}</span>
         </div>
 
-        <div className='brand-center'>
-          <span className='brand-name'>MOD</span>
-          <span className='brand-tag'>Fintech Solutions</span>
-        </div>
 
-        <div className='brand-right'>
-          <div className='profile' tabIndex={0}>
+
+        <div className='header-right'>
+          <div className='profile'>
             <img src={avatar} alt='user' className='avatar' />
             <div className='profile-info'>
               <div className='email'>{email}</div>
               <div className='role'>{role}</div>
             </div>
-            <div className='profile-dropdown'>
+            <div className='profile-actions'>
               <button onClick={() => nav('/settings')}>Settings</button>
               <button onClick={logout}>Logout</button>
             </div>
@@ -125,52 +136,53 @@ export default function Home() {
         </div>
       </header>
 
-      <main className='hub-main'>
-
-        <div className='center-logo'>
-          <img src={MODlogo} alt='MOD logo' className='modlogo-lg' />
-        </div>
-
-        {/* NEW: 5-core grid under logo */}
-        <section className='core-grid'>
-          {PRIMARY.map((m) => (
-            <div key={m.key} className='core-cell'>
-              <PrimaryCard
-                data={m}
-                onOpen={() => setOpenKey(prev => (prev === m.key ? null : m.key))}
-              />
-            </div>
-          ))}
-        </section>
-
-        {/* NEW: expandable tools tray */}
-        <section className={`tools-tray ${openKey ? 'open' : ''}`}>
-          {openKey && (
-            <div className='tools-inner'>
-              <div className='tools-head'>
-                <span className='tools-badge'>
-                  {PRIMARY.find(x => x.key === openKey)?.title}
-                </span>
-              </div>
+<main className='hub-main stacked-layout'>
+  <section className='left-panel'>
+    {PRIMARY.map((m) => {
+      const isOpen = openKey === m.key
+      return (
+        <div key={m.key} className='core-cell'>
+          <PrimaryCard
+            data={m}
+            onOpen={() => setOpenKey(prev => (prev === m.key ? null : m.key))}
+            isActive={isOpen}
+          />
+          {isOpen && (
+            <div className='inline-tools-tray'>
               <nav className='tools-links'>
-                {TOOLS_BY_MODULE[openKey]?.map(t => (
-                  <a key={t.label} href={t.route} className='tool-link'>
+                {TOOLS_BY_MODULE[m.key]?.map(t => (
+                  <Link key={t.label} to={t.route} className='tool-link'>
                     {t.label}
-                  </a>
+                  </Link>
                 ))}
               </nav>
             </div>
           )}
-        </section>
+        </div>
+      )
+    })}
+  </section>
 
-        {firmId && <FirmChat firmId={firmId} />}
-        <SideModuleRail />
-      </main>
+
+
+
+<div className='right-widgets-panel'>
+    <LiveKPIs />
+    <FirmAlerts />
+</div>
+
+  {firmId && (
+    <div className='chat-wrapper'>
+      <FirmChat firmId={firmId} />
+    </div>
+  )}
+</main>
+
     </div>
   )
 }
 
-function PrimaryCard({ data, onOpen }) {
+function PrimaryCard({ data, onOpen, isActive }) {
   const cardRef = useRef(null)
 
   const onMove = e => {
@@ -195,13 +207,14 @@ function PrimaryCard({ data, onOpen }) {
   return (
     <article
       ref={cardRef}
-      className={`primary-card ep ${data.variant}`}
+      className={`primary-card ep ${data.variant} ${isActive ? 'active' : ''}`}
       onMouseMove={onMove}
       onMouseLeave={reset}
       onClick={onOpen}
-      role='link'
+      onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onOpen()}
+      role='button'
       tabIndex={0}
-      aria-label={`${data.title}. ${data.hint}`}
+      title={data.hint}
       style={{ transform: `rotateX(var(--rx)) rotateY(var(--ry))` }}
     >
       <div className='border-anim' />
